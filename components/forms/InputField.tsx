@@ -2,15 +2,17 @@ import React from 'react'
 import {Label} from "@/components/ui/label";
 import {cn} from "@/lib/utils";
 
-export const InputField = ({name, label, placeholder, type = "text", register, error, validation, disabled, value}: FormInputProps) => {
+import { FieldValues } from "react-hook-form";
+
+export const InputField = <T extends FieldValues>({name, label, placeholder, type = "text", register, error, validation, disabled, value}: FormInputProps<T>) => {
     return (
         <div className="space-y-2">
-        <Label htmlFor={name} className="form-label">
+        <Label htmlFor={name as string} className="form-label">
             {label}
         </Label>
             <input
             type={type}
-            id={name}
+            id={name as string}
             placeholder={placeholder}
             disabled={disabled}
             value={value}

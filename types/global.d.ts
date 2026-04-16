@@ -1,3 +1,5 @@
+import { Control, FieldError, UseFormRegister, RegisterOptions, FieldValues, Path } from "react-hook-form";
+
 declare global {
     type SignInFormData = {
         email: string;
@@ -14,22 +16,22 @@ declare global {
         preferredIndustry: string;
     };
 
-    type CountrySelectProps = {
-        name: string;
+    type CountrySelectProps<T extends FieldValues> = {
+        name: Path<T>;
         label: string;
-        control: Control;
+        control: Control<T>;
         error?: FieldError;
         required?: boolean;
     };
 
-    type FormInputProps = {
-        name: string;
+    type FormInputProps<T extends FieldValues> = {
+        name: Path<T>;
         label: string;
         placeholder: string;
         type?: string;
-        register: UseFormRegister;
+        register: UseFormRegister<T>;
         error?: FieldError;
-        validation?: RegisterOptions;
+        validation?: RegisterOptions<T>;
         disabled?: boolean;
         value?: string;
     };
@@ -39,12 +41,12 @@ declare global {
         label: string;
     };
 
-    type SelectFieldProps = {
-        name: string;
+    type SelectFieldProps<T extends FieldValues> = {
+        name: Path<T>;
         label: string;
         placeholder: string;
         options: readonly Option[];
-        control: Control;
+        control: Control<T>;
         error?: FieldError;
         required?: boolean;
     };
@@ -53,12 +55,6 @@ declare global {
         text: string;
         linkText: string;
         href: string;
-    };
-
-    type SearchCommandProps = {
-        renderAs?: 'button' | 'text';
-        label?: string;
-        initialStocks: StockWithWatchlistStatus[];
     };
 
     type WelcomeEmailData = {
@@ -175,6 +171,7 @@ declare global {
         buttonLabel?: string;
         buttonVariant?: 'primary' | 'secondary';
         className?: string;
+        initialStocks: StockWithWatchlistStatus[];
     };
 
     type AlertData = {
@@ -216,5 +213,3 @@ declare global {
         changePercent?: number;
     };
 }
-
-export {};

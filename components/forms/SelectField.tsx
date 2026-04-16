@@ -9,9 +9,9 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
-import {Controller} from "react-hook-form";
+import {Controller, FieldValues} from "react-hook-form";
 
-const SelectField = ({name, label, placeholder, options, control, error, required = false }:SelectFieldProps) => {
+const SelectField = <T extends FieldValues>({name, label, placeholder, options, control, error, required = false }:SelectFieldProps<T>) => {
     return (
         <div className="space-y-2">
             <Label htmlFor={name} className="form-label">{label}</Label>
@@ -29,17 +29,15 @@ const SelectField = ({name, label, placeholder, options, control, error, require
                         </SelectTrigger>
                         <SelectContent className="bg-gray-800 border-gray-56">
                             {options.map(option => (
-                                <SelectItem key={option.value} value={option.value} className="focus:bg-ray-600 focus:text-white">
+                                <SelectItem key={option.value} value={option.value} className="focus:bg-gray-600 focus:text-white">
                                     {option.label}
                                 </SelectItem>
                             ))}
-
                         </SelectContent>
-                        {error && <p className="text-sm text-red-500">{error.message}</p>}
                     </Select>
-
                 )}
             />
+            {error && <p className="text-sm text-red-500">{error.message}</p>}
         </div>
     )
 }
