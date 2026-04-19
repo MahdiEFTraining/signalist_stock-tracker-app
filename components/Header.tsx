@@ -17,7 +17,7 @@ import UserDropdown from "@/components/UserDropdown";
  * - On Mobile: Hides the central <NavItems />. The UserDropdown takes over navigation duties.
  * - On Desktop: Displays the full <NavItems /> in the center.
  */
-const Header = () => {
+const Header = ({ user }:{ user: User}) => {
     return (
         <header className="sticky top-0 z-50 w-full header bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
             <div className="container flex h-16 items-center justify-between header-wrapper">
@@ -41,7 +41,7 @@ const Header = () => {
                 </nav>
 
                 {/* 3. User Actions / Mobile Menu Trigger */}
-                <UserDropdown />
+                <UserDropdown user={user} />
             </div>
         </header>
     )

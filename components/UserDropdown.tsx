@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
 import NavItems from "@/components/NavItems";
+import {signOut} from "@/lib/actions/auth.actions";
 
 /**
  * UserDropdown Component
@@ -25,7 +26,7 @@ import NavItems from "@/components/NavItems";
  *    when the screen size is small.
  * 3. Logout functionality using Next.js router.
  */
-const UserDropdown = () => {
+const UserDropdown = ( {user}: {user: User}) => {
     const router = useRouter();
 
     /**
@@ -34,11 +35,9 @@ const UserDropdown = () => {
      */
     const handleSignOut = async () => {
         // Add actual logout logic here (e.g., supabase.auth.signOut())
+        await signOut();
         router.push("/sign-in");
     };
-
-    // Mock user data - Replace with actual auth context or props
-    const user = { name: 'John', email: 'contact@test.com' };
 
     return (
         <DropdownMenu>

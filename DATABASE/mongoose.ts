@@ -1,10 +1,12 @@
 import mongoose from "mongoose";
-import dns from "dns";
+import { setDefaultResultOrder } from 'dns'; // ❌ had `= from` - remove the `=`
+import { Resolver } from 'dns/promises';
 
-// Add this to handle potential SRV resolution issues in local/development environments
-if (dns.setServers) {
-    dns.setServers(['8.8.8.8', '1.1.1.1']);
-}
+const resolver = new Resolver();
+resolver.setServers(['8.8.8.8', '8.8.4.4']);
+setDefaultResultOrder('ipv4first');
+
+// Remove the `dns.setServers` block - you already handle it with Resolver above
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
@@ -17,25 +19,26 @@ declare global {
 
 let cached = global.mongooseCache;
 
-if(!cached) {
-    cached = global.mongooseCache = { conn: null , promise: null };
+if (!cached) {
+    cached = global.mongooseCache = { conn: null, promise: null };
 }
 
 export const connectToDatabase = async () => {
-    if(!MONGODB_URI) throw new Error("MongoDB URI must be set within .env");
+    if (!MONGODB_URI) throw new Error("MongoDB URI must be set within .env");
 
-    if(cached.conn) return cached.conn;
+    if (cached.conn) return cached.conn;
 
-    if(!cached.promise) {
-        cached.promise = mongoose.connect(MONGODB_URI, { 
+    if (!cached.promise) {
+        cached.promise = mongoose.connect(MONGODB_URI, {
             bufferCommands: false,
-            serverSelectionTimeoutMS: 10000, // 10 seconds timeout for server selection
+            serverSelectionTimeoutMS: 10000,
+            family: 4, // 👈 add this - forces IPv4, avoids IPv6 DNS issues
         });
     }
 
     try {
         cached.conn = await cached.promise;
-    }catch(err) {
+    } catch (err) {
         cached.promise = null;
         throw err;
     }
