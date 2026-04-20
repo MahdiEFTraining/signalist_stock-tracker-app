@@ -6,6 +6,7 @@ import {getWatchlistSymbolsByEmail} from "@/lib/actions/watchlist.actions";
 import {getNews} from "@/lib/actions/finnhub.action";
 import {UserForNewsEmail} from "@/app/types";
 import {formatDateToday} from "@/lib/utils";
+import {getFormattedTodayDate} from "@/lib/utils";
 
 
 export const sendSignUpEmail = inngest.createFunction(
@@ -117,7 +118,8 @@ export const sendDailyNewsSummary = inngest.createFunction(
                 userNewsSummaries.map(async({ user, newsContent }) => {
                     if(!newsContent) return false;
 
-                    return await sendNewsSummaryEmail({ email: user.email, date:formatDateToday, newsContent })
+                    return await sendNewsSummaryEmail({ email: user.email, date:getFormattedTodayDate(), newsContent })
+
                 })
             )
         })
