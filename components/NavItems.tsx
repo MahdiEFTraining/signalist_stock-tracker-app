@@ -3,6 +3,7 @@
 import Link from "next/link";
 import {NAV_ITEMS} from "@/lib/constants";
 import { usePathname } from "next/navigation";
+import SearchCommand from "@/components/SearchCommand";
 
 /**
  * NavItems Component
@@ -10,7 +11,7 @@ import { usePathname } from "next/navigation";
  * Renders a responsive list of navigation links based on the NAV_ITEMS constant.
  * It handles the "active" state logic to highlight the current page.
  */
-const NavItems = () => {
+const NavItems = ({initialStocks}: { initialStocks: StockWithWatchlistStatus[]}) => {
     // Hook to get the current URL path (e.g., "/search" or "/dashboard")
     const pathname = usePathname();
 
@@ -33,19 +34,25 @@ const NavItems = () => {
         // 'flex-col': Vertical stack on mobile.
         // 'sm:flex-row': Horizontal row on tablets and up.
         <ul className="flex flex-col sm:flex-row p-2 gap-3 sm:gap-10 font-medium">
-            {NAV_ITEMS.map(({ href, label }) => (
-                <li key={href}>
-                    <Link
-                        href={href}
-                        className={`
-                            hover:text-yellow-500 transition-colors 
+            {NAV_ITEMS.map(({ href, label }) => {
+                if(label == 'Search') return (
+                        <li key="search-trigger">
+                            <SearchCommand
+                                renderAs="text"
+                                label="Search"
+                                initialStocks={initialStocks}
+                            />
+                        </li>
+                    )
+
+                    return <li key={href}>
+                    <Link href={href} className={`hover:text-yellow-500 transition-colors 
                             ${isActive(href) ? 'text-gray-100' : ''} 
-                        `}
-                    >
-                        {label}
-                    </Link>
-                </li>
-            ))}
+                        `}>
+                {label}
+            </Link>
+            </li>
+            })}
         </ul>
     )
 }
