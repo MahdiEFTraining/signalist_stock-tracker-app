@@ -215,7 +215,7 @@
         @apply cursor-pointer px-4 py-2 w-fit flex items-center gap-2 text-sm md:text-base bg-yellow-500 hover:bg-yellow-500 text-black font-medium rounded;
     }
     .search-dialog {
-        @apply !bg-gray-800 lg:min-w-[800px] border-gray-600 fixed top-10 left-1/2 -translate-x-1/2 translate-y-10;
+        @apply !bg-gray-800 lg:min-w-[800px] border-gray-600 fixed top-16 left-1/2 -translate-x-1/2 translate-y-0;
     }
     .search-field {
         @apply !bg-gray-800 border-b border-gray-600 relative;

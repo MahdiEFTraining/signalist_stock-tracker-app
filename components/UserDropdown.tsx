@@ -26,7 +26,7 @@ import {signOut} from "@/lib/actions/auth.actions";
  *    when the screen size is small.
  * 3. Logout functionality using Next.js router.
  */
-const UserDropdown = ( {user}: {user: User}) => {
+const UserDropdown = ( {user, initialStocks }: {user: User, initialStocks: StockWithWatchlistStatus[]}) => {
     const router = useRouter();
 
     /**
@@ -95,7 +95,7 @@ const UserDropdown = ( {user}: {user: User}) => {
                 <div className="sm:hidden block">
                     <DropdownMenuSeparator className="bg-gray-600" />
                     <div className="px-2 py-2">
-                        <NavItems />
+                        <NavItems initialStocks={initialStocks}/>
                     </div>
                 </div>
             </DropdownMenuContent>
