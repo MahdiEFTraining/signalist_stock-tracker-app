@@ -36,6 +36,34 @@ export const signInWithEmail = async ({ email, password} : SignInFormData)=> {
     }
 }
 
+export const forgotPassword = async ({ email }: ForgotPasswordFormData) => {
+    console.log('[forgotPassword] called for', email);
+    try {
+        const result = await auth.api.requestPasswordReset({
+            body: {
+                email,
+                redirectTo: '/reset-password',
+            },
+        });
+        console.log('[forgotPassword] better-auth returned', result);
+    } catch (e) {
+        console.error('[forgotPassword] better-auth threw', e);
+    }
+    return { success: true };
+};
+
+export const resetPassword = async ({ token, newPassword }: { token: string; newPassword: string }) => {
+    try {
+        await auth.api.resetPassword({
+            body: { newPassword, token },
+        });
+        return { success: true };
+    } catch (e) {
+        console.log('Reset password failed', e);
+        return { success: false, error: 'This reset link is invalid or has expired.' };
+    }
+};
+
 export const signOut = async () => {
     try {
         await auth.api.signOut({ headers: await headers() });

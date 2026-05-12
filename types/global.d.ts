@@ -6,6 +6,15 @@ declare global {
         password: string;
     };
 
+    type ForgotPasswordFormData = {
+        email: string;
+    };
+
+    type ResetPasswordFormData = {
+        password: string;
+        confirmPassword: string;
+    };
+
     type SignUpFormData = {
         fullName: string;
         email: string;
@@ -109,7 +118,9 @@ declare global {
 
     type QuoteData = {
         c?: number;
+        d?: number;
         dp?: number;
+        pc?: number;
     };
 
     type ProfileData = {
@@ -146,6 +157,7 @@ declare global {
 
     type AlertsListProps = {
         alertData: Alert[] | undefined;
+        logos?: Record<string, string>;
     };
 
     type MarketNewsArticle = {
@@ -175,10 +187,13 @@ declare global {
         label?: string;
     };
 
+    type AlertCategory = 'price' | 'sentiment';
+
     type AlertData = {
         symbol: string;
         company: string;
         alertName: string;
+        alertCategory: AlertCategory;
         alertType: 'upper' | 'lower';
         threshold: string;
     };
@@ -209,8 +224,157 @@ declare global {
         company: string;
         alertName: string;
         currentPrice: number;
+        alertCategory: AlertCategory;
         alertType: 'upper' | 'lower';
         threshold: number;
         changePercent?: number;
+    };
+
+    type UserForNewsEmail = {
+        id: string;
+        email: string;
+        name: string;
+    };
+
+    type WatchlistStock = {
+        symbol: string;
+        company: string;
+        addedAt: Date;
+    };
+
+    type Portfolio = {
+        userId: string;
+        cashBalance: number;
+        initialCash: number;
+        currency: string;
+        createdAt: Date;
+    };
+
+    type Transaction = {
+        id: string;
+        symbol: string;
+        company: string;
+        side: 'buy' | 'sell';
+        quantity: number;
+        price: number;
+        totalValue: number;
+        executedAt: Date;
+    };
+
+    type Holding = {
+        symbol: string;
+        company: string;
+        quantity: number;
+        avgCostBasis: number;
+        realizedPnL: number;
+        updatedAt: Date;
+    };
+
+    type HoldingWithLivePrice = Holding & {
+        currentPrice: number;
+        marketValue: number;
+        unrealizedPnL: number;
+        unrealizedPnLPercent: number;
+        sector?: string;
+    };
+
+    type PortfolioSnapshot = {
+        date: string;
+        totalValue: number;
+        cashBalance: number;
+        holdingsValue: number;
+    };
+
+    type PortfolioSummary = {
+        totalValue: number;
+        cashBalance: number;
+        holdingsValue: number;
+        initialCash: number;
+        totalReturn: number;
+        totalReturnPercent: number;
+        todayPnL: number;
+        todayPnLPercent: number;
+    };
+
+    type SectorAllocation = {
+        sector: string;
+        value: number;
+        percent: number;
+    };
+
+    type LeaderboardEntry = {
+        rank: number;
+        userName: string;
+        totalValue: number;
+        totalReturn: number;
+        totalReturnPercent: number;
+        isCurrentUser?: boolean;
+    };
+
+    type TradeData = {
+        symbol: string;
+        company: string;
+        side: 'buy' | 'sell';
+        quantity: number;
+    };
+
+    type TradeResult = {
+        success: boolean;
+        error?: string;
+        executedPrice?: number;
+        totalValue?: number;
+    };
+
+    type TradeModalProps = {
+        symbol: string;
+        company: string;
+        open: boolean;
+        setOpen: (open: boolean) => void;
+        maxSellQuantity?: number;
+        defaultSide?: 'buy' | 'sell';
+    };
+
+    type ChatMessage = {
+        role: 'user' | 'model';
+        text: string;
+    };
+
+    type AskStockQuestionResult = {
+        success: boolean;
+        answer?: string;
+        error?: string;
+    };
+
+    type SentimentLabel = 'negative' | 'neutral' | 'positive';
+
+    type NewsSentiment = {
+        symbol: string;
+        articleId: number;
+        headline: string;
+        summary?: string;
+        source: string;
+        url: string;
+        articleDatetime: Date;
+        sentiment: number;
+        sentimentLabel: SentimentLabel;
+        confidence?: number;
+        processedAt: Date;
+    };
+
+    type SentimentTimelinePoint = {
+        date: string;
+        avgSentiment: number;
+        articleCount: number;
+        positiveCount: number;
+        neutralCount: number;
+        negativeCount: number;
+    };
+
+    type SentimentSummary = {
+        symbol: string;
+        avgSentiment: number;
+        articleCount: number;
+        windowDays: number;
+        label: SentimentLabel;
     };
 }

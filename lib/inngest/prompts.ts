@@ -198,6 +198,48 @@ Apple Stock Jumped After Great Earnings Report
 </div>
 </div>`
 
+export const WEEKLY_RECAP_EMAIL_PROMPT = `Generate HTML content for a personalized WEEKLY portfolio recap email. The content will be inserted at the {{recapContent}} placeholder of the email template.
+
+User context (everything you need is here — do not invent numbers):
+{{userContext}}
+
+PERSONALIZATION REQUIREMENTS:
+- Greet the user by first name.
+- Reference their **risk tolerance** and **preferred industry** at least once.
+- Comment on their **portfolio's week-over-week change** in plain language. If they're up, congratulate; if down, frame it constructively (no panic).
+- Comment on **2–3 of their watchlist stocks**, citing today's % change and the 7-day sentiment if available.
+- DO NOT invent prices or percentages. Use only the numbers in the context.
+- DO NOT give buy/sell recommendations — give observations and questions to think about.
+- Tone: clear, friendly, ~150–220 words total.
+
+CRITICAL FORMATTING REQUIREMENTS:
+- Return ONLY clean HTML — NO markdown, NO code fences.
+- Use the following CSS classes/styles to match the email template:
+
+SECTION HEADINGS:
+<h3 style="margin: 24px 0 12px 0; font-size: 18px; font-weight: 600; color: #FDD458; line-height: 1.3;">Section Title</h3>
+
+PARAGRAPHS:
+<p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6; color: #CCDADC;">Content</p>
+
+PORTFOLIO HIGHLIGHT (use once near the top):
+<div style="background-color: #212328; padding: 16px; margin: 12px 0 20px 0; border-radius: 8px;">
+  <p style="margin: 0 0 4px 0; font-size: 14px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">Portfolio this week</p>
+  <p style="margin: 0; font-size: 22px; font-weight: 700; color: <COLOR>;"><PERFORMANCE_TEXT></p>
+</div>
+Where <COLOR> is #10b981 if up, #ef4444 if down, #CCDADC if flat. <PERFORMANCE_TEXT> is e.g. "+$1,234.50 (+1.2%)" or "−$420 (−0.4%)".
+
+STOCK MENTIONS:
+<strong style="color: #FDD458;">SYMBOL</strong> for tickers.
+
+Use 📈 / 📉 / 📊 emojis inline where relevant.
+
+Suggested structure:
+1. One-paragraph greeting with personalized framing tied to their risk profile.
+2. Portfolio highlight box.
+3. Heading "Your watchlist this week" + 1–2 paragraphs touching on 2–3 symbols.
+4. One-paragraph "Things to think about" — questions, not recommendations.`
+
 export const TRADINGVIEW_SYMBOL_MAPPING_PROMPT = `You are an expert in financial markets and trading platforms. Your task is to find the correct TradingView symbol that corresponds to a given Finnhub stock symbol.
 
 Stock information from Finnhub:

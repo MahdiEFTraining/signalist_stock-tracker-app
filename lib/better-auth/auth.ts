@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
 import { connectToDatabase } from "@/DATABASE/mongoose";
 import { nextCookies } from "better-auth/next-js";
+import { sendPasswordResetEmail } from "@/lib/nodemailer";
 
 let authInstance: any = null;
 
@@ -26,6 +27,20 @@ export const getAuth = async () => {
             minPasswordLength: 8,
             maxPasswordLength: 128,
             autoSignIn: true,
+            sendResetPassword: async ({ user, url }: { user: { email: string; name?: string }; url: string }) => {
+                console.log('[sendResetPassword] callback fired for', user.email, '→', url);
+                try {
+                    await sendPasswordResetEmail({
+                        email: user.email,
+                        name: user.name ?? 'there',
+                        resetUrl: url,
+                    });
+                    console.log('[sendResetPassword] email sent OK');
+                } catch (e) {
+                    console.error('[sendResetPassword] email send FAILED', e);
+                    throw e;
+                }
+            },
         },
         plugins: [nextCookies()],
     });

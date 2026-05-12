@@ -7,17 +7,26 @@ import {POPULAR_STOCK_SYMBOLS} from "@/lib/constants";
 const FINNHUB_BASE_URL = 'https://finnhub.io/api/v1';
 const NEXT_PUBLIC_FINNHUB_API_KEY = process.env.NEXT_PUBLIC_API_KEY ?? '';
 
+const FINNHUB_TIMEOUT_MS = 5000;
+
 async function fetchJSON<T>(url: string, revalidateSeconds?: number): Promise<T> {
     const options: RequestInit & { next?: { revalidate?: number } } = revalidateSeconds
-        ? { cache: 'force-cache', next: { revalidate: revalidateSeconds } }
-        : { cache: 'no-store'};
+        ? { cache: 'force-cache', next: { revalidate: revalidateSeconds }, signal: AbortSignal.timeout(FINNHUB_TIMEOUT_MS) }
+        : { cache: 'no-store', signal: AbortSignal.timeout(FINNHUB_TIMEOUT_MS) };
 
-    const res = await fetch(url, options);
-    if (!res.ok) {
-        const text = await res.text().catch(() => '');
-        throw new Error(`Fetch failed ${res.status}: ${text}`);
+    try {
+        const res = await fetch(url, options);
+        if (!res.ok) {
+            const text = await res.text().catch(() => '');
+            throw new Error(`Fetch failed ${res.status}: ${text}`);
+        }
+        return (await res.json()) as T;
+    } catch (err) {
+        if (err instanceof Error && (err.name === 'TimeoutError' || err.name === 'AbortError')) {
+            throw new Error(`Finnhub request timed out after ${FINNHUB_TIMEOUT_MS}ms: ${url}`);
+        }
+        throw err;
     }
-    return (await res.json()) as T;
 }
 
 export { fetchJSON };
@@ -90,6 +99,41 @@ export async function getNews(symbols?: string[]): Promise<MarketNewsArticle[]> 
         console.error('getNews error', err);
         throw new Error('Failed to fetch news');
     }
+}
+
+export async function getCompanyLogos(symbols: string[]): Promise<Record<string, string>> {
+    const token = process.env.FINNHUB_API_KEY ?? NEXT_PUBLIC_FINNHUB_API_KEY;
+    const result: Record<string, string> = {};
+    await Promise.all(
+        symbols.map(async (sym) => {
+            try {
+                const url = `${FINNHUB_BASE_URL}/stock/profile2?symbol=${encodeURIComponent(sym.toUpperCase())}&token=${token}`;
+                const profile = await fetchJSON<{ logo?: string }>(url, 3600);
+                if (profile?.logo) result[sym.toUpperCase()] = profile.logo;
+            } catch {
+                // ignore — logo is cosmetic
+            }
+        })
+    );
+    return result;
+}
+
+export async function getStockQuote(symbol: string): Promise<QuoteData> {
+    const token = process.env.FINNHUB_API_KEY ?? NEXT_PUBLIC_FINNHUB_API_KEY;
+    const url = `${FINNHUB_BASE_URL}/quote?symbol=${encodeURIComponent(symbol.toUpperCase())}&token=${token}`;
+    return fetchJSON<QuoteData>(url);
+}
+
+export async function getCompanyProfile(symbol: string): Promise<{
+    name?: string;
+    finnhubIndustry?: string;
+    logo?: string;
+    exchange?: string;
+}> {
+    const token = process.env.FINNHUB_API_KEY ?? NEXT_PUBLIC_FINNHUB_API_KEY;
+    const url = `${FINNHUB_BASE_URL}/stock/profile2?symbol=${encodeURIComponent(symbol.toUpperCase())}&token=${token}`;
+    // Sectors rarely change — cache for 24h
+    return fetchJSON<{ name?: string; finnhubIndustry?: string; logo?: string; exchange?: string }>(url, 86400);
 }
 
 export const searchStocks = cache(async (query?: string): Promise<StockWithWatchlistStatus[]> => {

@@ -26,13 +26,13 @@ const Header = async ({ user }:{ user: User}) => {
             <div className="container flex h-16 items-center justify-between header-wrapper">
 
                 {/* 1. Logo Section */}
-                <Link href="/" className="flex items-center gap-2">
+                <Link href="/dashboard" className="flex items-center gap-2">
                     <Image
-                        src="/assets/icons/logo.svg"
-                        alt="Signalist logo"
-                        width={140}
-                        height={32}
-                        className="h-8 w-auto cursor-pointer"
+                        src="/assets/images/wealthflow_logo_large.png"
+                        alt="Wealthflow logo"
+                        width={600}
+                        height={140}
+                        className="h-10 w-auto cursor-pointer"
                         priority // Loads image immediately for LCP optimization
                     />
                 </Link>
