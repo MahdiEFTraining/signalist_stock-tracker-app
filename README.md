@@ -111,18 +111,7 @@ PFA_LOG.md            — full development log (decisions, design notes, testing
 
 ---
 
-## Origin & originality
 
-This project started from the JavaScript Mastery "Signalist" tutorial (auth + watchlist + alerts + daily news email + TradingView widgets). All net-new work is documented in `PFA_LOG.md` and explicitly labelled in the presentation deck. Net-new contributions on top of the tutorial baseline:
-
-- Complete **paper-trading & portfolio analytics** track (4 models, 8 server actions, 2 pages, 6 components, 1 daily snapshot cron, leaderboard).
-- Complete **AI investment assistant** track (per-stock chatbot, news sentiment pipeline + cron + chart, sentiment-shift alerts extending the alert system, personalized weekly AI recap).
-- Direct Gemini REST helper with structured JSON output (`responseSchema`).
-- 5s `AbortSignal.timeout` on all Finnhub fetches with clear error messages.
-
-See [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) for the full delta.
-
----
 
 ## License
 
